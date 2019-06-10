@@ -64,17 +64,17 @@ $(document).ready(function() {
     var playGround = $("#play-ground");
     var questionArea = $("#question-area");
     var correctAnswers=0;
-var incorrectAnswers=0;
-var unAnswered=0;
+    var incorrectAnswers=0;
+    var unAnswered=0;
 
 
-var startButton=$("<button>");
-startButton.attr("class","btn btn-primary");
-startButton.attr("id","start");
-startButton.text("start");
-playGround.append(startButton);
+    var startButton=$("<button>");
+    startButton.attr("class","btn btn-primary");
+    startButton.attr("id","start");
+    startButton.text("start");
+    playGround.append(startButton);
 
-startButton.on("click",function(){
+    startButton.on("click",function(){
 
     
     var timer1=$("<h4>");
@@ -85,31 +85,57 @@ startButton.on("click",function(){
     timer1.html("The remaining time: "+time+" seconds!");
     playGround.append(timer1);
     
-    var buttonGroup = $("<div>");
-    buttonGroup.attr("class","btn-group-vertical");
-    buttonGroup.attr("id","button-group");
-    questionArea.append(buttonGroup);
+    
     
     function initialization(){
         time = 5;
+        questionArea.empty();
+        clearInterval(intervalId);
+        var buttonGroup = $("<div>");
+        buttonGroup.attr("class","btn-group-vertical");
+        buttonGroup.attr("id","button-group");
+        questionArea.append(buttonGroup);
         for(var i=0;i<questions[questionNumber].length;i++){
-            var questionButton=$("<div>");
+            var questionButton=$("<button>");
             questionButton.attr("class","btn btn-outline-secondary");
             questionButton.attr("id","question"+i);
             questionButton.text(questions[questionNumber][i]);
             $("#button-group").append(questionButton);
             
         }
-        intervalId = setInterval(run, 1000);
+        intervalId =setInterval(run, 1000);
     }
     function gameOver(){
         clearInterval(intervalId);
-        
+        questionArea.empty();
+        var overText = $("<h4>");
+        overText.text("All done, here is how you did!");
+        var result1 = $("<h4>");
+        result1.text ('Correct Answer:'+correctAnswers);
+        var result2 = $("<h4>");
+        result1.text ('Incorrect Answer:'+incorrectAnswers);
+        var result3 = $("<h4>");
+        result1.text ('Unanswered:'+unAnswered);
+        var startOver = $("<button>");
+        console.log(correctAnswers);
+        console.log(incorrectAnswers);
+        console.log(unAnswered);
+        startOver.attr("class","btn btn-primary");
+        startOver.attr("id","start-over");
+        startOver.text("Start Over?");
+        questionArea.append(overText);
+        questionArea.append(result1);
+        questionArea.append(result2);
+        questionArea.append(result3);
+        questionArea.append(startOver);
+        $("#start-over").on("click",function(){
+            questionNumber=0;
+            initialization();
+        })
     }
     function nextQuestion(){
         if(questionNumber<questions.length)
-            {questionNumber++;
-            unAnswered++;
+            {
             initialization();
         }
         else
@@ -131,32 +157,31 @@ startButton.on("click",function(){
             timeOut.text("Out Of Time!!");
             questionArea.append(timeOut);
             var imageTimeOut = $('<img id="time-out">');
-            imageTimeOut.attr('src','./assets/images/correct.jpg');
+            imageTimeOut.attr('src','./assets/images/time-out.jpg');
             imageTimeOut.attr('width','500px');
             questionArea.append(imageTimeOut);
+            questionNumber++;
+            unAnswered++;
             setTimeout(nextQuestion,2000);
             
         }
-    }
-    function unAnswerQuestion(){
-        unAnswerQuestion++;
-    }
-    
-    
-
-    $("#question1").on("click",function(){
-        questionArea.empty();
-        var correct = $("<h4>");
-            correct.text("Correct!!");
-            questionArea.append(correct);
-            var imageCorrect = $('<img id="correct">');
-            imageCorrect.attr('src','./assets/images/correct.jpg');
-            imageCorrect.attr('width','500px');
-            
-            questionArea.append(imageCorrect);
-            clearInterval(intervalId);
-        })
+        choose();
         
+    }
+   function uncoverAnswer(){
+    var uncovered;
+    if(questionNumber===0||questionNumber===1||questionNumber===3||questionNumber===5||questionNumber===6){
+        uncovered="C";
+    }
+    else if(questionNumber===2){
+        uncovered="A";
+    }
+    else if(questionNumber===4||questionNumber===7){
+        uncovered="B";
+    }
+    var uncover = $("<p>");
+        uncover.text("The correct answer was:"+uncovered);
+        questionArea.append(uncover);
         // C. John and Mary
         // C. in the 19th century, when it became a symbol of the abolition of slavery
         // A. Buttermilk
@@ -165,23 +190,119 @@ startButton.on("click",function(){
         // C. Byron Nelson
         // C. Willie Mays
         // B. 18
+   }
+    
+    function choose(){
+
+    $("#question1").on("click",function(){
+        questionArea.empty();
+        clearInterval(intervalId);
+        if(questionNumber===2){
+            var correct = $("<h4>");
+                correct.text("Correct!!");
+                questionArea.append(correct);
+                var imageCorrect = $('<img id="correct">');
+                imageCorrect.attr('src','./assets/images/correct.jpg');
+                imageCorrect.attr('width','500px');
+                questionArea.append(imageCorrect);
+                questionNumber++;
+                correctAnswers++;
+        }
+        else{
+            uncoverAnswer();
+            var nope = $("<h4>");
+            nope.text("Nope!!");
+            questionArea.append(nope);
+            var imageNope = $('<img id="correct">');
+            imageNope.attr('src','./assets/images/nope.png');
+            imageNope.attr('width','500px');
+            questionArea.append(imageNope);
+            questionNumber++;
+            incorrectAnswers++;
+        }
+        setTimeout(nextQuestion,2000);
+        })
+    $("#question2").on("click",function(){
+        questionArea.empty();
+        clearInterval(intervalId);
+        if(questionNumber===4||questionNumber===7){
+            var correct = $("<h4>");
+                correct.text("Correct!!");
+                questionArea.append(correct);
+                var imageCorrect = $('<img id="correct">');
+                imageCorrect.attr('src','./assets/images/correct.jpg');
+                imageCorrect.attr('width','500px');
+                questionArea.append(imageCorrect);
+                questionNumber++;
+                correctAnswers++;
+        }
+        else{
+            uncoverAnswer();
+            var nope = $("<h4>");
+            nope.text("Nope!!");
+            questionArea.append(nope);
+            var imageNope = $('<img id="correct">');
+            imageNope.attr('src','./assets/images/nope.png');
+            imageNope.attr('width','500px');
+            questionArea.append(imageNope);
+            questionNumber++;
+            incorrectAnswers++;
+        }
+        setTimeout(nextQuestion,2000);
+        })
+    $("#question3").on("click",function(){
+        questionArea.empty();
+        clearInterval(intervalId);
+        if(questionNumber===0||questionNumber===1||questionNumber===3||questionNumber===5||questionNumber===6){
+            var correct = $("<h4>");
+                correct.text("Correct!!");
+                questionArea.append(correct);
+                var imageCorrect = $('<img id="correct">');
+                imageCorrect.attr('src','./assets/images/correct.jpg');
+                imageCorrect.attr('width','500px');
+                questionArea.append(imageCorrect);
+                questionNumber++;
+                correctAnswers++;
+        }
+        else{
+            uncoverAnswer();
+            var nope = $("<h4>");
+            nope.text("Nope!!");
+            questionArea.append(nope);
+            var imageNope = $('<img id="correct">');
+            imageNope.attr('src','./assets/images/nope.png');
+            imageNope.attr('width','500px');
+            questionArea.append(imageNope);
+            questionNumber++;
+            incorrectAnswers++;
+        }
+        setTimeout(nextQuestion,2000);
+        })
+    $("#question4").on("click",function(){
+        questionArea.empty();
+        clearInterval(intervalId);
+        var nope = $("<h4>");
+            nope.text("Nope!!");
+            questionArea.append(nope);
+            uncoverAnswer();
+            var imageNope = $('<img id="correct">');
+            imageNope.attr('src','./assets/images/nope.png');
+            imageNope.attr('width','500px');
+            questionArea.append(imageNope);
+            questionNumber++;
+            incorrectAnswers++;
+            setTimeout(nextQuestion,2000);
+        })
+    }
+        
+        
+      
         
    
         
         
 
 })
-
-
-
-   
-
-
-
-
-
-
-
 
 
 
