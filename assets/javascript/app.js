@@ -108,14 +108,14 @@ $(document).ready(function() {
     function gameOver(){
         clearInterval(intervalId);
         questionArea.empty();
-        var overText = $("<h4>");
+        var overText = $('<h4 id="overtext">');
         overText.text("All done, here is how you did!");
-        var result1 = $("<h4>");
+        var result1 = $('<h4 id="result1">');
         result1.text ('Correct Answer:'+correctAnswers);
-        var result2 = $("<h4>");
-        result1.text ('Incorrect Answer:'+incorrectAnswers);
-        var result3 = $("<h4>");
-        result1.text ('Unanswered:'+unAnswered);
+        var result2 = $('<h4 id="result2">');
+        result2.text ('Incorrect Answer:'+incorrectAnswers);
+        var result3 = $('<h4 id="result3">');
+        result3.text ('Unanswered:'+unAnswered);
         var startOver = $("<button>");
         console.log(correctAnswers);
         console.log(incorrectAnswers);
